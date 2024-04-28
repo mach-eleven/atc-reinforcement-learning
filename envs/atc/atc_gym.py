@@ -1,11 +1,11 @@
 import math
 import random
 
-import gym
-import gym.spaces
+import gymnasium as gym
+import gymnasium.spaces
 import numpy as np
 from gym.envs.classic_control import rendering
-from gym.utils import seeding
+from gymnasium.utils import seeding
 from numba import jit
 
 from envs.atc.rendering import Label
@@ -21,11 +21,13 @@ def sigmoid_distance_func(d, d_max):
 
 class AtcGym(gym.Env):
     metadata = {
-        'render.modes': ['human', 'rgb_array'],
-        'video.frames_per_second': 50
+        'render_modes': ['human', 'rgb_array'],
+        "render_fps": 50
     }
 
     def __init__(self, sim_parameters=model.SimParameters(1), scenario=scenarios.LOWW()):
+        self.render_mode = 'rgb_array'
+        
         self.last_reward = 0
         self.total_reward = 0
         self.actions_taken = 0
@@ -69,7 +71,7 @@ class AtcGym(gym.Env):
                                                          1])
 
             # action space structure: v, h, phi
-            self.action_space = gym.spaces.MultiDiscrete([int((self._airplane.v_max - self._airplane.v_min) / 10),
+            self.action_space = gymnasium.spaces.MultiDiscrete([int((self._airplane.v_max - self._airplane.v_min) / 10),
                                                           int(self._airplane.h_max / 100),
                                                           360])
         else:
@@ -78,7 +80,7 @@ class AtcGym(gym.Env):
                                                          360])
 
             # action space structure: v, h, phi
-            self.action_space = gym.spaces.Box(low=np.array([-1, -1, -1]),
+            self.action_space = gymnasium.spaces.Box(low=np.array([-1, -1, -1]),
                                                high=np.array([1, 1, 1]))
 
         self._action_discriminator = [5, 50, 0.5]
@@ -110,7 +112,7 @@ class AtcGym(gym.Env):
         ], dtype=np.float32)
 
         # observation space: x, y, h, phi, v, h-mva, d_faf, phi_rel_faf, phi_rel_runway
-        self.observation_space = gym.spaces.Box(low=-1.0, high=1.0, shape=(10,))
+        self.observation_space = gymnasium.spaces.Box(low=-1.0, high=1.0, shape=(10,))
 
         self.reward_range = (-3000.0, 23000.0)
 
@@ -135,7 +137,7 @@ class AtcGym(gym.Env):
         self.timesteps += 1
         self.done = False
         reward = -0.05 * self._sim_parameters.timestep
-
+        
         reward += self._action_with_reward(self._airplane.action_v, action, 0)
         reward += self._action_with_reward(self._airplane.action_h, action, 1)
         reward += self._action_with_reward(self._airplane.action_phi, action, 2)
@@ -172,7 +174,7 @@ class AtcGym(gym.Env):
             reward = -200
             self.done = True
 
-        state = self._get_state(mva)
+        state = self._get_obs(mva)
         self.state = state
 
         # Reward shaping rewards for approach sector position and glideslope
@@ -189,7 +191,11 @@ class AtcGym(gym.Env):
                     / (0.5 * self.normalization_state_max)
 
         self._update_metrics(reward)
-        return state, reward, self.done, {"original_state": self.state}
+
+        # If true, the user needs to call reset().
+        truncated = False
+
+        return state, reward, self.done, truncated, {"original_state": self.state}
 
     def _update_metrics(self, reward):
         self.last_reward = reward
@@ -259,7 +265,7 @@ class AtcGym(gym.Env):
 
         return reward_model(side * plane_to_runway) * position_factor * 1.2
 
-    def _get_state(self, mva):
+    def _get_obs(self, mva):
         # observation space: x, y, h, phi, v, h-mva, d_faf, phi_rel_faf, phi_rel_runway
         to_faf_x = self._runway.corridor.faf[0][0] - self._airplane.x
         to_faf_y = self._runway.corridor.faf[1][0] - self._airplane.y
@@ -267,13 +273,28 @@ class AtcGym(gym.Env):
         self._d_faf = self.euclidean_dist(to_faf_x, to_faf_y)
         self._phi_rel_faf = self._calculate_phi_rel_faf(to_faf_x, to_faf_y)
         self._on_gp_altitude = self._calculate_on_gp_altitude(self._d_faf, self._faf_mva)
-        state = np.array([self._airplane.x, self._airplane.y, self._airplane.h, self._airplane.phi, self._airplane.v,
+
+        
+        state = np.array([self._airplane.x, self._airplane.y, self._airplane.h, 
+                          self._airplane.phi, self._airplane.v,
                           self._airplane.h - mva,
                           self._on_gp_altitude,
                           self._d_faf,
                           self._phi_rel_faf,
                           phi_rel_runway],
                          dtype=np.float32)
+        
+        # state = {
+        #     "airplane_x": self._airplane.x,
+        #     "airplane_y": self._airplane.y,
+        #     "airplane_h": self._airplane.h,
+        #     "airplane_phi": self._airplane.phi,
+        #     "airplane_v": self._airplane.v,
+        #     "airplane_h_sub_mva": self._airplane.h - mva,
+        #     "d_faf": self._d_faf,
+        #     "phi_rel_faf": self._phi_rel_faf,
+        #     "phi_rel_runway": phi_rel_runway,
+        # }
         return state
 
     @staticmethod
@@ -313,6 +334,7 @@ class AtcGym(gym.Env):
             # invalid action, outside of permissible range
             print("Warning invalid action: %d for index: %d" % (action_to_take, index))
             reward -= 1.0
+
         return reward
 
     def _denormalized_action(self, action, index):
@@ -334,7 +356,7 @@ class AtcGym(gym.Env):
                    normalization_action_factor[index] / 2 + \
                    normalization_action_offset[index]
 
-    def reset(self):
+    def reset(self, seed=None, options=None):
         """
         Reset the environment
 
@@ -348,7 +370,8 @@ class AtcGym(gym.Env):
                                         random.choice(entry_point.levels) * 100, entry_point.phi, 250)
         # only for testing/debuging, position next to FAF:
         # self._airplane = model.Airplane(self._sim_parameters, "FLT01", 47.3, 34.5, 16000, 335, 250)
-        self.state = self._get_state(0)
+
+        self.state = self._get_obs(0)
         self.total_reward = 0
         self.last_reward = 0
         self._actions_ignoring_resets += self.actions_taken
@@ -362,9 +385,9 @@ class AtcGym(gym.Env):
         self.winning_ratio = self.winning_ratio + 1 / self._win_buffer_size * \
                              (self._win_buffer[-1] - self._win_buffer.pop(0))
 
-        return self.state
+        return self.state, {"info": "not stated"}
 
-    def render(self, mode='human'):
+    def render(self, mode='rgb_array'):
         """
         Rendering the environments state
         :type mode: Either "human" for direct to screen rendering or "rgb_array"

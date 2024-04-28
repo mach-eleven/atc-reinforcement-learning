@@ -1,5 +1,13 @@
-from gym.envs.registration import register
+# from gym.envs.registration import register
 
-register(id='AtcEnv-v0',
-         entry_point='envs.atc.atc_gym:AtcGym'
-         )
+# register(id='AtcEnv-v0',
+#          entry_point='envs.atc.atc_gym:AtcGym'
+#          )
+
+
+from gymnasium.envs.registration import register
+
+register(
+     id='AtcEnv-v0',
+     entry_point='envs.atc.atc_gym:AtcGym'
+)

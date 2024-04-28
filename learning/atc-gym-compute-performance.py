@@ -1,5 +1,6 @@
-import gym
 import time
+
+import gym
 
 # noinspection PyUnresolvedReferences (is used for registering the atc gym in the OpenAI gym framework)
 import envs.atc.atc_gym

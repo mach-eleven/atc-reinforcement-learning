@@ -9,7 +9,8 @@ from gym.wrappers import TimeLimit
 from stable_baselines import PPO2
 from stable_baselines.bench import Monitor
 from stable_baselines.common.policies import MlpPolicy
-from stable_baselines.common.vec_env import SubprocVecEnv, DummyVecEnv, VecNormalize, VecCheckNan
+from stable_baselines.common.vec_env import (DummyVecEnv, SubprocVecEnv,
+                                             VecCheckNan, VecNormalize)
 
 from learning import hyperparam_optimization
 

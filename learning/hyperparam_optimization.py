@@ -2,14 +2,15 @@ from copy import deepcopy
 
 import numpy as np
 import optuna
-from optuna.pruners import SuccessiveHalvingPruner, MedianPruner
-from optuna.samplers import RandomSampler, TPESampler
 from optuna.integration.skopt import SkoptSampler
-from stable_baselines import SAC, DDPG, TD3
-from stable_baselines.ddpg import AdaptiveParamNoiseSpec, NormalActionNoise, OrnsteinUhlenbeckActionNoise
-from stable_baselines.common.vec_env import VecNormalize, VecEnv
-from stable_baselines.her import HERGoalEnvWrapper
+from optuna.pruners import MedianPruner, SuccessiveHalvingPruner
+from optuna.samplers import RandomSampler, TPESampler
+from stable_baselines import DDPG, SAC, TD3
 from stable_baselines.common.base_class import _UnvecWrapper
+from stable_baselines.common.vec_env import VecEnv, VecNormalize
+from stable_baselines.ddpg import (AdaptiveParamNoiseSpec, NormalActionNoise,
+                                   OrnsteinUhlenbeckActionNoise)
+from stable_baselines.her import HERGoalEnvWrapper
 
 # noinspection PyUnresolvedReferences
 import envs.atc.atc_gym

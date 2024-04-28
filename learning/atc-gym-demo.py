@@ -1,5 +1,9 @@
-import gym
+import sys
 import time
+
+sys.path.append('/home/dev/Projects/lab/atc-reinforcement-learning/atc')
+
+import gym
 
 # noinspection PyUnresolvedReferences (is used for registering the atc gym in the OpenAI gym framework)
 import envs.atc.atc_gym
