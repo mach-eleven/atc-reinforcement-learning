@@ -6,7 +6,7 @@ from stable_baselines3 import DQN
 
 # from baselines import deepq
 
-sys.path.append('/home/dev/Projects/lab/atc-reinforcement-learning/atc')
+sys.path.append('..')
 
 # noinspection PyUnresolvedReferences (is used for registering the atc gym in the OpenAI gym framework)
 import envs.atc.atc_gym
