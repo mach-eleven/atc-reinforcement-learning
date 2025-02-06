@@ -511,7 +511,7 @@ if __name__ == '__main__':
     freeze_support()
     base_dir = ".."
 
-    model_dir = os.path.join("../", "model")
+    model_dir = os.path.join("../", "output_model")
     os.makedirs(model_dir, exist_ok=True)
 
     video_dir = os.path.join("../", "videos")
