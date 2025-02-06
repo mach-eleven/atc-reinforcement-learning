@@ -1,9 +1,9 @@
 import sys
 import time
 
-sys.path.append('/home/dev/Projects/lab/atc-reinforcement-learning/atc')
+sys.path.append('..')
 
-import gym
+import gymnasium as gym
 
 # noinspection PyUnresolvedReferences (is used for registering the atc gym in the OpenAI gym framework)
 import envs.atc.atc_gym
@@ -16,7 +16,9 @@ nextaction = env.action_space.sample()
 num = 10000
 t0 = time.time()
 for i in range(num):
-    state, reward, done, info = env.step(nextaction)
+    
+    state, reward, done, _, info = env.step(nextaction)
+
     env.render()
     time.sleep(1)
     if i % 20 == 0:

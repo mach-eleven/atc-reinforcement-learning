@@ -1,10 +1,11 @@
 import math
 import random
 
+# from gym.envs.classic_control import rendering
+
 import gymnasium as gym
 import gymnasium.spaces
 import numpy as np
-from gym.envs.classic_control import rendering
 from gymnasium.utils import seeding
 from numba import jit
 
@@ -13,6 +14,7 @@ from envs.atc.themes import ColorScheme
 from . import model
 from . import scenarios
 
+from . import my_rendering as rendering
 
 @jit(nopython=True)
 def sigmoid_distance_func(d, d_max):
@@ -401,7 +403,7 @@ class AtcGym(gym.Env):
             self._scale = screen_width / world_size_x
             screen_height = int(world_size_y * self._scale)
 
-            from gym.envs.classic_control import rendering
+            # from gym.envs.classic_control import rendering
             from pyglet import gl
             self.viewer = rendering.Viewer(screen_width + 2 * self._padding, screen_height + 2 * self._padding)
 

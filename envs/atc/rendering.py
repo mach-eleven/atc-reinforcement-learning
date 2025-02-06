@@ -1,6 +1,6 @@
 import pyglet
-from gym.envs.classic_control.rendering import Geom
 
+from envs.atc.my_rendering import Geom
 from envs.atc.themes import ColorScheme
 
 
