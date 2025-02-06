@@ -3,3 +3,7 @@
 .pytest_cache/
 logs/*
 logs_optimizer/*
+
+__pycache__
+
+.DS_Store
