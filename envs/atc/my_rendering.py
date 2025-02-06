@@ -48,11 +48,11 @@ def get_display(spec):
     Pyglet only supports multiple Displays on Linux.
     """
     if spec is None:
-        return pyglet.display.get_display()
+        return pyglet.canvas.get_display()
         # returns already available pyglet_display,
         # if there is no pyglet display available then it creates one
     elif isinstance(spec, str):
-        return pyglet.display.Display(spec)
+        return pyglet.canvas.Display(spec)
     else:
         raise error.Error(
             "Invalid display specification: {}. (Must be a string like :0 or None.)".format(
