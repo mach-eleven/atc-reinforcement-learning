@@ -2,7 +2,7 @@ gymnasium[mujoco]
 numba
 shapely
 numpy
-gym==0.21.0
+gym
 pyglet==1.5.0
 # absl-py==2.1.0
 # astor==0.8.1
