@@ -1,6 +1,9 @@
+import sys
 import time
 
 import gymnasium as gym
+
+sys.path.append('..')
 
 # noinspection PyUnresolvedReferences (is used for registering the atc gym in the OpenAI gym framework)
 import envs.atc.atc_gym

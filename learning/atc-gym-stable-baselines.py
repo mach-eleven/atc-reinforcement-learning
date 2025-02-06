@@ -5,6 +5,7 @@ import uuid
 from typing import Callable, Optional
 from multiprocessing import freeze_support
 
+
 import gymnasium as gym
 import numpy as np
 from gymnasium import logger
@@ -15,7 +16,7 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import SubprocVecEnv, DummyVecEnv, VecVideoRecorder
 from torch.optim.lr_scheduler import LinearLR
 
-sys.path.append('/home/dev/Projects/lab/atc-reinforcement-learning/atc')
+sys.path.append('..')
 import envs.atc.atc_gym
 
 

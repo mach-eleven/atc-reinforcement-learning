@@ -1,4 +1,7 @@
+# FILE NOT UPDATED
+
 from copy import deepcopy
+import sys
 
 import numpy as np
 import optuna
@@ -13,6 +16,7 @@ from stable_baselines.ddpg import (AdaptiveParamNoiseSpec, NormalActionNoise,
 from stable_baselines.her import HERGoalEnvWrapper
 
 # noinspection PyUnresolvedReferences
+sys.path.append('..')
 import envs.atc.atc_gym
 
 
