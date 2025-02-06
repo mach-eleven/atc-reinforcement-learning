@@ -16,7 +16,7 @@ nextaction = env.action_space.sample()
 num = 100000
 t0 = time.time()
 for i in range(num):
-    state, reward, done, info = env.step(nextaction)
+    state, reward, done, _, info = env.step(nextaction)
 t1 = time.time()
 
 print("Finished!")
