@@ -4,7 +4,7 @@ numba
 shapely
 numpy
 gym
-pyglet==1.5.0
+pyglet
 PyYAML
 stable-baselines3
 optuna
