@@ -23,7 +23,9 @@ for i in range(num):
     time.sleep(1)
     if i % 20 == 0:
         nextaction = env.action_space.sample()
+    
     print("reward: %s || done: %s" % (state, done))
+
     if done:
         env.reset()
 t1 = time.time()

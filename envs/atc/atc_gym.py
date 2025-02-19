@@ -396,15 +396,18 @@ class AtcGym(gym.Env):
         """
         if self.viewer is None:
             self._padding = 10
-            screen_width = 600
+            screen_width = 1200
 
             world_size_x = self._world_x_max - self._world_x_min
             world_size_y = self._world_y_max - self._world_y_min
+
+            # print(f"World Size: {world_size_x}, {world_size_y}")
+
             self._scale = screen_width / world_size_x
             screen_height = int(world_size_y * self._scale)
 
             # from gym.envs.classic_control import rendering
-            from pyglet import gl
+            # from pyglet import gl
             self.viewer = rendering.Viewer(screen_width + 2 * self._padding, screen_height + 2 * self._padding)
 
             background = rendering.FilledPolygon([(0, 0), (0, screen_height + 2 * self._padding),
@@ -412,9 +415,6 @@ class AtcGym(gym.Env):
                                                   (screen_width + 2 * self._padding, 0)])
             background.set_color(*ColorScheme.background_inactive)
             self.viewer.add_geom(background)
-
-            gl.glEnable(gl.GL_LINE_SMOOTH)
-            gl.glEnable(gl.GL_POLYGON_SMOOTH)
 
             self._render_mvas()
             self._render_runway()

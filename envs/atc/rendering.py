@@ -15,7 +15,7 @@ class Label(Geom):
     def _render(self):
         label = pyglet.text.Label(self.text,
                                   font_name='Arial',
-                                  font_size=9,
+                                  font_size=12,
                                   weight='bold' if self.bold else 'normal',
                                   x=self.x, y=self.y,
                                   anchor_x="left", anchor_y="top",
