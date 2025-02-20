@@ -8,6 +8,7 @@ pyglet
 PyYAML
 stable-baselines3
 optuna
+pytest
 # absl-py==2.1.0
 # astor==0.8.1
 # astunparse==1.6.3

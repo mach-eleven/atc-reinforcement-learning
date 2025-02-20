@@ -59,6 +59,9 @@ class AtcGym(gym.Env):
         self._world_y_max = bbox[3]
         world_x_length = self._world_x_max - self._world_x_min
         world_y_length = self._world_y_max - self._world_y_min
+        
+        print(world_x_length, world_y_length)
+
         self._world_max_distance = self.euclidean_dist(world_x_length, world_y_length)
 
         self.done = True
